@@ -19,3 +19,4 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('/videos', 'VideoController');
+Route::resource('/users', 'UserController');

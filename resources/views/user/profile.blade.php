@@ -4,11 +4,6 @@
     $('.open-video').on('click', function(){
         window.location = $(this).attr('data-url');
     });
-    $('.btn-hapus').on('click', function(){
-        /* var link = $(this).children('source').attr("src");
-        $('#videoModal').attr('src', link); */
-        $('#formHapus').attr('action', $(this).attr('data-url'));
-    });
     $('ul.pagination').hide();
     $(function() {
         $('.infinite-scroll').jscroll({
@@ -27,7 +22,16 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center mb-3">
-        <div class="col-md-4 col-sm-12">
+        <div class="col-4 d-flex justify-content-end">
+            <img src="{{ asset('user.png') }}" class="text-center" style="max-height: 100px"/>
+        </div>
+        <div class="col-8">
+            <p><b>{{ $user->name }}</b></p>
+            <p>{{ $user->email }}</p>
+        </div>
+    </div>
+    <div class="row justify-content-center mb-3">
+        <div class="col-sm-12">
             @if (session('status'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('status') }}
@@ -36,57 +40,28 @@
                     </button>
                 </div>
             @endif
-            <form action="{{ route('videos.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
             <div class="card">
-                <div class="card-header font-weight-bold">Upload Video</div>
-
-                <div class="card-body">
-                    <div class="form-group">
-                        <label class="font-weight-bold">Title</label>
-                        <input type="text" name="filename" class="form-control" required/>
-                    </div>
-                    <div class="form-group">
-                        <label class="font-weight-bold">Description</label>
-                        <textarea name="description" class="form-control" rows="4"required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="font-weight-bold">Upload file</label>
-                        <input type="file" accept="video/*" name="upload_file" class="form-control" required/>
-                    </div>
-                    <button type="submit" class="btn btn-success">Upload</button>
-                </div>
-            </div>
-            </form>
-        </div>
-    {{-- </div>
-    <div class="row justify-content-center"> --}}
-        <div class="col-md-8 col-sm-12">
-            <div class="card">
-                <div class="card-header font-weight-bold">My Videos</div>
+                <div class="card-header font-weight-bold">{{ $user->name }}'s Videos</div>
                 <div class="card-body">
                     <div class="infinite-scroll">
                     <div class="row">
                         @foreach($videos as $vid)
-                        <div class="col-sm-6 mb-3">
+                        <div class="col-sm-4 mb-3">
                             @if($vid->thumbnail_path != null)
                             <img class="open-video" style="width: 100%" src="{{ asset('storage/'.$vid->thumbnail_path) }}" data-url="{{ route('videos.show', $vid->id) }}" />
                             @else
-                            <video class="embed-responsive-item open-video" data-url="{{ route('videos.show', $vid->id) }}" style="width: 100%" autoplay muted loop>
+                            <video class="embed-responsive-item open-video" data-url="{{ route('videos.show', $vid->id) }}" style="width: 100%" muted loop>
                                 <source src="{{ asset('storage/'.$vid->path) }}">
                             </video>
                             @endif
-                            <div class="d-flex justify-content-center mt-2">
-                            <a href="{{ route('videos.edit', $vid->id) }}" class="btn btn-warning mr-2 text-white">Edit</a>
-                            <button class="btn btn-danger btn-hapus" data-toggle="modal" data-target="#modalDelete" data-url="{{ route('videos.destroy', $vid->id) }}">Delete</button>
-                            </div>
                         </div>
-                        @if($loop->iteration % 2 == 0)
+                        @if($loop->iteration % 3 == 0)
                     </div>
                     <div class="row">
                         @endif
                     @endforeach
                     </div>
+                    {{ $videos->links() }}
                     </div>
                 </div>
             </div>

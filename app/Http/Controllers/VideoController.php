@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Video;
+use App\User;
 use Illuminate\Http\Request;
 use Auth;
 use File;
 use Storage;
+use VideoThumbnail;
 
 class VideoController extends Controller
 {
@@ -18,7 +20,9 @@ class VideoController extends Controller
     public function index()
     {
         //
-        $videos = Video::where('user_id', Auth::user()->id)->get();
+        $videos = Video::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->paginate(6);
+        $user = User::with('own_videos')->get();
+        // dd($user);
         return view('user.video', compact('videos'));
     }
 
@@ -41,16 +45,20 @@ class VideoController extends Controller
     public function store(Request $request)
     {
         //
-        // dd($request->all());
-        // $file_upload = $request->file('upload_file');
+        $upload_file = $request->file('upload_file');
         $path = Storage::disk('public')->put('videos', $request->file('upload_file'));
+        $image = basename($path).".jpg";
+        $thumbnail = VideoThumbnail::createThumbnail(storage_path('app/public/'.$path), storage_path('app/public/thumbnails'), $image, 5, 640, 640);
         // dd($path);
-        $save = Video::create([
-            'user_id' => Auth::user()->id,
-            'filename' => $request->filename,
-            'description' => $request->description,
-            'path' => $path,
-        ]);
+        if($thumbnail){
+            $save = Video::create([
+                'user_id' => Auth::user()->id,
+                'filename' => $request->filename,
+                'description' => $request->description,
+                'path' => $path,
+                'thumbnail_path' => "thumbnails/".$image,
+            ]);
+        }
         return redirect()->action('VideoController@index')->with('status', 'Added new video');
     }
 
@@ -63,6 +71,7 @@ class VideoController extends Controller
     public function show(Video $video)
     {
         //
+        return view('show-video', compact('video'));
     }
 
     /**
@@ -74,6 +83,10 @@ class VideoController extends Controller
     public function edit(Video $video)
     {
         //
+        if(Auth::user()->id != $video->user_id){
+            return redirect()->route('home')->with('warning', 'Tidak bisa edit video milik orang lain');
+        }
+        return view('user.edit', compact('video'));
     }
 
     /**
@@ -86,6 +99,21 @@ class VideoController extends Controller
     public function update(Request $request, Video $video)
     {
         //
+        if($request->file('upload_file')){
+            $delete = Storage::disk('public')->delete($video->path);
+            $path = Storage::disk('public')->put('videos', $request->file('upload_file'));
+            $update = Video::find($video->id)->update([
+                'filename' => $request->filename,
+                'description' => $request->description,
+                'path' => $path,
+            ]);
+        }else{
+            $update = Video::find($video->id)->update([
+                'filename' => $request->filename,
+                'description' => $request->description,
+            ]);
+        }
+        return redirect()->action('VideoController@index')->with('status', 'Success updating video');
     }
 
     /**
@@ -97,5 +125,8 @@ class VideoController extends Controller
     public function destroy(Video $video)
     {
         //
+        $delete_video = Storage::disk('public')->delete($video->path);
+        $delete_data = Video::find($video->id)->delete();
+        return redirect()->action('VideoController@index')->with('status', 'Success deleting video');
     }
 }

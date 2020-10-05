@@ -26,4 +26,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function own_videos()
+    {
+        // return $this->hasMany('App\Video','id','user_id');
+        return $this->hasMany('App\Video');
+    }
 }

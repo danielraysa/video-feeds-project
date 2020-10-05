@@ -24,7 +24,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $videos = Video::all();
+        $videos = Video::with('video_owner')->orderBy('created_at', 'desc')->paginate(6);
+        // dd($videos);
         return view('home', compact('videos'));
     }
 }
