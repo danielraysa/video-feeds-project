@@ -17,7 +17,11 @@ class UserController extends Controller
     public function index()
     {
         //
+        if(Auth::user()->id != 1){
+            return redirect()->route('home');
+        }
         $users = User::all();
+        return view('admin.user', compact('users'));
     }
 
     /**
@@ -39,6 +43,12 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
+        $user_baru = User::create([
+            'email' => $request->email,
+            'name' => $request->name,
+            'password' => bcrypt($request->email),
+        ]);
+        return redirect()->back()->with('success', 'Berhasil menambah user');
     }
 
     /**
