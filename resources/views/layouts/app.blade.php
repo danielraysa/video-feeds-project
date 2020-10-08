@@ -13,12 +13,24 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jscroll/2.4.1/jquery.jscroll.js" integrity="sha512-AgWDJkG13uHcgm8NoCl1qcTk5gml73x2ZAkIe7ljOgT/pRdYYLbcGG1cY8GDOEQt/se3kdBf8t6IaAl8XFPOiw==" crossorigin="anonymous"></script>
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        .stroke-transparent {
+            -webkit-text-stroke: 1px #000;
+        }
+    </style>
     @stack('css')
 </head>
 <body>
@@ -40,6 +52,9 @@
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item {{ (request()->is('home')) ? 'active' : '' }}">
                             <a class="nav-link" href="{{ route('home') }}">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item {{ (request()->is('search*')) ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ route('search') }}">Search</a>
                         </li>
                         <li class="nav-item {{ (request()->is('videos*')) ? 'active' : '' }}">
                             <a class="nav-link" href="{{ route('videos.index') }}">Video</a>
@@ -87,6 +102,9 @@
             <ul class="navbar-nav nav-justified w-100">
                 <li class="nav-item">
                     <a href="{{ route('home') }}" class="nav-link {{ (request()->is('home')) ? 'active' : '' }}"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('search') }}" class="nav-link {{ (request()->is('search*')) ? 'active' : '' }}"><i class="fas fa-search"></i></a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('videos.index') }}" class="nav-link {{ (request()->is('videos*')) ? 'active' : '' }}"><i class="fas fa-video"></i></a>

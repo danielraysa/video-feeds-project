@@ -19,6 +19,9 @@
             contentSelector: 'div.infinite-scroll',
             callback: function() {
                 $('ul.pagination').remove();
+                $('.open-video').on('click', function(){
+                    window.location = $(this).attr('data-url');
+                });
             }
         });
     });

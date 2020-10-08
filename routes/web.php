@@ -17,6 +17,12 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::resource('/videos', 'VideoController');
-Route::resource('/users', 'UserController');
+Route::group(['middleware' => 'web','auth'], function () {
+    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/search', 'HomeController@search')->name('search');
+    Route::resource('/videos', 'VideoController');
+    Route::post('/videos/{id}/like', 'LikeController@store')->name('like');
+    Route::post('/videos/{id}/comment', 'CommentController@store')->name('comment');
+    Route::post('/videos/{id}/comment/update', 'CommentController@store')->name('update-comment');
+    Route::resource('/users', 'UserController');
+});

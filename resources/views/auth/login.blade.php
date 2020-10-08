@@ -6,8 +6,10 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Login') }}</div>
-
                 <div class="card-body">
+                    <div class="row justify-content-center">
+                        <img class="img-responsive text-center" src="{{ asset('logo.png') }}" />
+                    </div>
                     <form method="POST" action="{{ route('login') }}" aria-label="{{ __('Login') }}">
                         @csrf
 

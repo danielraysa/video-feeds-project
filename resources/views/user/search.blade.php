@@ -1,44 +1,22 @@
-@extends('layouts.app', ['title' => 'Home'])
+@extends('layouts.app', ['title' => 'Search'])
 @push('js')
 <script>
     $('.open-video').on('click', function(){
-        /* var link = $(this).children('source').attr("src");
-        $('#videoModal').attr('src', link); */
         window.location = $(this).attr('data-url');
     });
-    $('.like-video').on('click', function(){
-        var id = $(this).attr('data-id');
-        var like = $(this).attr('data-like');
-        var link = $(this).attr('data-url');
-        $.ajax({
+    $('#search_box').keyup(function(){
+        var link = "{{ route('search') }}";
+        var text = $(this).val();
+        /* $.ajax({
             url: link,
-            type: 'post',
-            data: {video_id: id},
+            type: 'get',
+            data: {filter: text},
             success: function(result){
+                alert(result);
                 console.log(result);
-                alert(result.like_status);
-                if(result.like_status != 'Y'){
-                    alert('1');
-                    $(this).addClass('text-white').removeClass('text-danger');
-                    // $(this).addClass('text-white');
-                    $(this).attr('data-like', false);
-                    //$('#video_count'
-                }else{
-                    alert('2');
-                    $(this).addClass('text-danger').removeClass('text-white');
-                    // $(this).addClass('text-danger');
-                    $(this).attr('data-like', true);
-                }
             }
-        });
+        }); */
     });
-    $('.comment-video').on('click', function(){
-        window.location = $(this).attr('data-url');
-    });
-    $('#modalVideo').on('hidden.bs.modal', function(){
-        $(this).find('video')[0].pause();
-    });
-
     $('ul.pagination').hide();
     $(function() {
         $('.infinite-scroll').jscroll({
@@ -78,8 +56,15 @@
                 </div>
             @endif
             <div class="card">
-                <div class="card-header font-weight-bold">Dashboard</div>
+                <div class="card-header font-weight-bold">Search</div>
                 <div class="card-body">
+                {{-- <div class="row"> --}}
+                <form action="{{ route('search') }}" method="GET">
+                <div class="form-inline mb-3">
+                    <input type="search" class="col-lg-11 col-10 form-control" id="search_box" name="filter" placeholder="Search..." @if(isset($_GET['filter'])) value="{{ $_GET['filter'] }}" @endif/>
+                    <button type="submit" class="col-lg-1 col-2 btn btn-primary"><i class="fas fa-search"></i></button>
+                </div>
+                </form>
                 <div class="infinite-scroll">
                     <div class="row" id="content_dynamic">
                         @foreach($videos as $vid)
@@ -92,10 +77,10 @@
                                 <source src="{{ asset('storage/'.$vid->path) }}">
                             </video>
                             @endif
-                            <div class="mt-2">
-                                <i style="font-size: 1.25rem" class="like-video fas fa-heart text-danger stroke-transparent" data-id="{{ $vid->id }}" data-url="{{ route('like', $vid->id) }}" data-like="true"></i> <span id="video_count">{{ $vid->video_likes->count() }}</span> &nbsp;
-                                <i style="font-size: 1.25rem" class="comment-video fas fa-comment text-white stroke-transparent" data-url="{{ route('videos.show', $vid->id) }}"></i> {{ $vid->video_comments->count() }}
-                            </div>
+                            {{-- <div class="mt-2">
+                                <i style="font-size: 1.25rem" class="like-video fas fa-heart text-danger stroke-transparent" data-id="{{ $vid->id }}" data-like="true"></i> 40 &nbsp;
+                                <i style="font-size: 1.25rem" class="comment-video fas fa-comment text-white stroke-transparent" data-url="{{ route('videos.show', $vid->id) }}"></i> 23
+                            </div> --}}
                             <p class="mb-0"><b>{{ $vid->filename }}</b></p>
                             <p class="mb-3" style="font-size: 0.85rem"><a href="{{ route('users.show', $vid->video_owner->id) }}">&#64;{{ $vid->video_owner->name }}</a> — {{ $vid->description }}</p>
                         </div>

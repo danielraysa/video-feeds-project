@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Video;
+use App\User;
+use Auth;
 
 class HomeController extends Controller
 {
@@ -24,8 +26,23 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $videos = Video::with('video_owner')->orderBy('created_at', 'desc')->paginate(6);
+        $videos = Video::with(['video_owner', 'video_comments', 'video_likes' => function ($query){
+            $query->where('like_status', 'Y');
+        }])->orderBy('created_at', 'desc')->paginate(6);
         // dd($videos);
         return view('home', compact('videos'));
     }
+
+    public function search(Request $request)
+    {
+        $users = User::orderBy('created_at', 'desc')->paginate(6);
+        $videos = Video::with('video_owner','video_likes','video_comments')->orderBy('created_at', 'desc')->paginate(6);
+        if(isset($request->filter)){
+            $filter = $request->filter;
+            $users = User::whereRaw("LOWER(email) LIKE '%".$filter."%'")->orWhereRaw("LOWER(name) LIKE '%".$filter."%'")->paginate(6);
+            $videos = Video::with('video_owner','video_likes','video_comments')->whereRaw("LOWER(filename) LIKE '%".$filter."%'")->orWhereRaw("LOWER(description) LIKE '%".$filter."%'")->orderBy('created_at', 'desc')->paginate(6);
+        }
+        // dd($videos);
+        return view('user.search', compact('users','videos'));
+    } 
 }

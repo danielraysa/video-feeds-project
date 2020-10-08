@@ -13,4 +13,14 @@ class Video extends Model
     {
         return $this->belongsTo('App\User','user_id','id');
     }
+
+    public function video_likes()
+    {
+        return $this->hasMany('App\Like');
+    }
+
+    public function video_comments()
+    {
+        return $this->hasMany('App\Comment');
+    }
 }
