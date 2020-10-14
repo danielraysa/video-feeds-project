@@ -46,19 +46,20 @@ class VideoController extends Controller
     {
         //
         $upload_file = $request->file('upload_file');
-        $path = Storage::disk('public')->put('videos', $request->file('upload_file'));
-        $image = basename($path).".jpg";
+        $path = Storage::disk('s3')->putFile('videos', $request->file('upload_file'), 'public');
+        // return Storage::disk('s3')->url($path);
+        /* $image = basename($path).".jpg";
         $thumbnail = VideoThumbnail::createThumbnail(storage_path('app/public/'.$path), storage_path('app/public/thumbnails'), $image, 5, 640, 640);
-        // dd($path);
-        if($thumbnail){
+        // dd($path); */
+        // if($thumbnail){
             $save = Video::create([
                 'user_id' => Auth::user()->id,
                 'filename' => $request->filename,
                 'description' => $request->description,
                 'path' => $path,
-                'thumbnail_path' => "thumbnails/".$image,
+                // 'thumbnail_path' => "thumbnails/".$image,
             ]);
-        }
+        // }
         return redirect()->action('VideoController@index')->with('status', 'Added new video');
     }
 

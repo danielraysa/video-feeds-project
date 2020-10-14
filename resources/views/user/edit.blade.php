@@ -36,7 +36,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <video class="embed-responsive-item" style="width: 100%" autoplay muted loop>
-                                <source src="{{ asset('storage/'.$video->path) }}">
+                                <source src="{{ $video->video_url() }}">
                             </video>
                         </div>
                         

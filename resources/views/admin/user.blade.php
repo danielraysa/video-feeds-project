@@ -73,6 +73,7 @@
                                 <th>Email</th>
                                 <th>Name</th>
                                 <th>Created At</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,6 +83,7 @@
                             <td>{{ $usr->email }}</td>
                             <td>{{ $usr->name }}</td>
                             <td>{{ $usr->created_at }}</td>
+                            <td><a href="{{ route('users.show', $usr->id) }}" class="btn btn-primary"><i class="fas fa-eye"></i></a></td>
                         </tr>
                         @endforeach
                         </tbody>

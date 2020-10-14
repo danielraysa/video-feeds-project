@@ -76,7 +76,7 @@
                             <img class="open-video" style="width: 100%" src="{{ asset('storage/'.$vid->thumbnail_path) }}" data-url="{{ route('videos.show', $vid->id) }}" />
                             @else
                             <video class="embed-responsive-item open-video" data-url="{{ route('videos.show', $vid->id) }}" style="width: 100%" autoplay muted loop>
-                                <source src="{{ asset('storage/'.$vid->path) }}">
+                                <source src="{{ $vid->video_url() }}">
                             </video>
                             @endif
                             <div class="d-flex justify-content-center mt-2">

@@ -9,7 +9,7 @@
                     <div class="row">
                         <div class="col-lg-8 col-sm-12">
                             <video class="embed-responsive-item" style="width: 100%"  controls>
-                                <source src="{{ asset('storage/'.$video->path) }}">
+                                <source src="{{ $video->video_url() }}">
                             </video>
                         </div>
                         <div class="col-lg-4 col-sm-12">

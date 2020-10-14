@@ -74,7 +74,7 @@
                             @else
                             {{-- <video class="embed-responsive-item open-video" data-toggle="modal" data-target="#modalVideo" style="width: 100%" autoplay muted> --}}
                             <video class="embed-responsive-item open-video" data-url="{{ route('videos.show', $vid->id) }}" style="width: 100%">
-                                <source src="{{ asset('storage/'.$vid->path) }}">
+                                <source src="{{ $vid->video_url() }}">
                             </video>
                             @endif
                             {{-- <div class="mt-2">
