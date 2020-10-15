@@ -46,6 +46,7 @@ class VideoController extends Controller
     {
         //
         $upload_file = $request->file('upload_file');
+        // $path = Storage::disk('public')->putFile('videos', $request->file('upload_file'));
         $path = Storage::disk('s3')->putFile('videos', $request->file('upload_file'), 'public');
         // return Storage::disk('s3')->url($path);
         /* $image = basename($path).".jpg";
@@ -101,8 +102,10 @@ class VideoController extends Controller
     {
         //
         if($request->file('upload_file')){
-            $delete = Storage::disk('public')->delete($video->path);
-            $path = Storage::disk('public')->put('videos', $request->file('upload_file'));
+            // $delete = Storage::disk('public')->delete($video->path);
+            $delete = Storage::disk('s3')->delete($video->path);
+            // $path = Storage::disk('public')->put('videos', $request->file('upload_file'));
+            $path = Storage::disk('s3')->put('videos', $request->file('upload_file'));
             $update = Video::find($video->id)->update([
                 'filename' => $request->filename,
                 'description' => $request->description,
@@ -126,7 +129,8 @@ class VideoController extends Controller
     public function destroy(Video $video)
     {
         //
-        $delete_video = Storage::disk('public')->delete($video->path);
+        // $delete_video = Storage::disk('public')->delete($video->path);
+        $delete_video = Storage::disk('s3')->delete($video->path);
         $delete_data = Video::find($video->id)->delete();
         return redirect()->action('VideoController@index')->with('status', 'Success deleting video');
     }
