@@ -39,10 +39,10 @@ class HomeController extends Controller
         $videos = Video::with('video_owner','video_likes','video_comments')->orderBy('created_at', 'desc')->paginate(6);
         if(isset($request->filter)){
             $filter = $request->filter;
-            $users = User::whereRaw("LOWER(email) LIKE '%".$filter."%'")->orWhereRaw("LOWER(name) LIKE '%".$filter."%'")->paginate(6);
-            $videos = Video::with('video_owner','video_likes','video_comments')->whereRaw("LOWER(filename) LIKE '%".$filter."%'")->orWhereRaw("LOWER(description) LIKE '%".$filter."%'")->orderBy('created_at', 'desc')->paginate(6);
+            $users = User::select('id')->whereRaw("LOWER(email) LIKE '%".$filter."%'")->orWhereRaw("LOWER(name) LIKE '%".$filter."%'")->get()->pluck('id');
+            $videos = Video::with('video_owner','video_likes','video_comments')->whereRaw("LOWER(filename) LIKE '%".$filter."%'")->orWhereRaw("LOWER(description) LIKE '%".$filter."%'")->orWhereIn('user_id', $users)->orderBy('created_at', 'desc')->paginate(6);
+            // dd($videos);
         }
-        // dd($videos);
         return view('user.search', compact('users','videos'));
     } 
 }

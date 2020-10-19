@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Video;
 use App\User;
+use App\Like;
+use App\Comment;
 use Illuminate\Http\Request;
 use Auth;
 use File;
@@ -12,6 +14,11 @@ use VideoThumbnail;
 
 class VideoController extends Controller
 {
+
+    /* public function __construct()
+    {
+        $this->middleware('auth');
+    } */
     /**
      * Display a listing of the resource.
      *
@@ -73,7 +80,8 @@ class VideoController extends Controller
     public function show(Video $video)
     {
         //
-        return view('show-video', compact('video'));
+        $users = User::all()->except(Auth::user()->id);
+        return view('show-video', compact('video','users'));
     }
 
     /**
@@ -85,10 +93,11 @@ class VideoController extends Controller
     public function edit(Video $video)
     {
         //
+        $users = User::all()->except(Auth::user()->id);
         if(Auth::user()->id != $video->user_id){
             return redirect()->route('home')->with('warning', 'Tidak bisa edit video milik orang lain');
         }
-        return view('user.edit', compact('video'));
+        return view('user.edit', compact('video','users'));
     }
 
     /**
@@ -132,6 +141,8 @@ class VideoController extends Controller
         // $delete_video = Storage::disk('public')->delete($video->path);
         $delete_video = Storage::disk('s3')->delete($video->path);
         $delete_data = Video::find($video->id)->delete();
+        $delete_like = Like::where('video_id', $video->id)->delete();
+        $delete_comment = Comment::where('video_id', $video->id)->delete();
         return redirect()->action('VideoController@index')->with('status', 'Success deleting video');
     }
 }

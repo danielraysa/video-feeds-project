@@ -19,15 +19,20 @@
                 alert(result.like_status);
                 if(result.like_status != 'Y'){
                     alert('1');
-                    $(this).addClass('text-white').removeClass('text-danger');
-                    // $(this).addClass('text-white');
+                    // $(this).addClass('text-white').removeClass('text-danger');
+                    $(this).removeClass('text-danger');
+                    $(this).addClass('text-white');
                     $(this).attr('data-like', false);
-                    //$('#video_count'
+                    var like_count = $('#hidden_count_'+id).val();
+                    $('#video_count_'+id).text(like_count-1);
                 }else{
                     alert('2');
-                    $(this).addClass('text-danger').removeClass('text-white');
-                    // $(this).addClass('text-danger');
+                    // $(this).addClass('text-danger').removeClass('text-white');
+                    $(this).removeClass('text-white');
+                    $(this).addClass('text-danger');
                     $(this).attr('data-like', true);
+                    var like_count = $('#hidden_count_'+id).val();
+                    $('#video_count_'+id).text(like_count+1);
                 }
             }
         });
@@ -78,7 +83,7 @@
                 </div>
             @endif
             <div class="card">
-                <div class="card-header font-weight-bold">Dashboard</div>
+                <div class="card-header font-weight-bold">Home</div>
                 <div class="card-body">
                 <div class="infinite-scroll">
                     <div class="row" id="content_dynamic">
@@ -93,7 +98,7 @@
                             </video>
                             @endif
                             <div class="mt-2">
-                                <i style="font-size: 1.25rem" class="like-video fas fa-heart text-danger stroke-transparent" data-id="{{ $vid->id }}" data-url="{{ route('like', $vid->id) }}" data-like="true"></i> <span id="video_count">{{ $vid->video_likes->count() }}</span> &nbsp;
+                                <i style="font-size: 1.25rem" class="like-video fas fa-heart text-danger stroke-transparent" data-id="{{ $vid->id }}" data-url="{{ route('like', $vid->id) }}" data-like="true"></i> <input id="hidden_count_{{ $vid->id }}" type="hidden" value="{{ $vid->video_likes->count() }}"/><span id="video_count_{{ $vid->id }}">{{ $vid->video_likes->count() }}</span> &nbsp;
                                 <i style="font-size: 1.25rem" class="comment-video fas fa-comment text-white stroke-transparent" data-url="{{ route('videos.show', $vid->id) }}"></i> {{ $vid->video_comments->count() }}
                             </div>
                             <p class="mb-0"><b>{{ $vid->filename }}</b></p>

@@ -42,7 +42,8 @@ class CommentController extends Controller
             'video_id' => $request->video_id,
             'comment_text' => $request->comment,
         ]);
-        return response()->json($comment, 200);
+        // return response()->json($comment, 200);
+        return redirect()->back();
     }
 
     /**

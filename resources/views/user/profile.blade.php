@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'My Videos'])
+@extends('layouts.app', ['title' => Auth::id() == $user->id ? 'My Profile' : $user->name."'s Profile"])
 @push('js')
 <script>
     $('.open-video').on('click', function(){
